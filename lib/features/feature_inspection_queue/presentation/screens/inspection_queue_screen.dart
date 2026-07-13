@@ -42,7 +42,6 @@ class _InspectionQueueScreenState extends State<InspectionQueueScreen> with Sing
       appBar: _buildAppBar(),
       body: Column(
         children: [
-      //    _buildSearchBar(),
           _buildFilterTabs(),
           Expanded(
             child: BlocConsumer<InspectionQueueCubit, BaseState<InspectionQueueModel>>(
@@ -232,7 +231,6 @@ class _InspectionQueueScreenState extends State<InspectionQueueScreen> with Sing
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Header row with status and actions
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

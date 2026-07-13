@@ -22,7 +22,6 @@ class _AllProjectsScreenState extends State<AllProjectsScreen> {
   late UserHiveModel userHiveModel;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     userHiveModel = userInformationCubit.state.userHiveModel;
   }
@@ -196,13 +195,7 @@ class _ProjectCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        // Navigate to project detail
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => ProjectDetailScreen(projectId: project.id),
-        //   ),
-        // );
+
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
