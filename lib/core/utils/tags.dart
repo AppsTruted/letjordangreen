@@ -1,0 +1,30 @@
+final List<String> availableTags = [
+  "New",
+  "Vegan",
+  "Vegetarian",
+  "Spicy",
+  "Gluten-free",
+  "Dairy-free",
+  "Chef special",
+];
+
+final List<String> availableAllergens = [
+  "Nuts",
+  "Soy",
+  "Gluten",
+  "Fish",
+  "Bean",
+  "Dairy",
+  "Crustaceans",
+  "Eggs",
+  "Peanut butter",
+  "Lactose",
+  "Mustard",
+  "Shellfish",
+  "Sulfites",
+  "Seed",
+  "Wheat",
+  "Vinegar",
+  "Celery",
+  "Sesame seeds",
+];
