@@ -13,8 +13,7 @@ class InspectionQueueScreen extends StatefulWidget {
   State<InspectionQueueScreen> createState() => _InspectionQueueScreenState();
 }
 
-class _InspectionQueueScreenState extends State<InspectionQueueScreen>
-    with SingleTickerProviderStateMixin {
+class _InspectionQueueScreenState extends State<InspectionQueueScreen> with SingleTickerProviderStateMixin {
   late TabController _tabController;
   String _selectedFilter = 'all';
   final TextEditingController _searchController = TextEditingController();
