@@ -14,7 +14,7 @@ class AppRoutes {
   static const String aboutAppScreen = '/aboutAppScreen';
   static const String onBoardingScreen = '/onBoardingScreen';
   static const String myCardsScreen = '/myCardsScreen';
-  static const String notificationsScreen = '/notificationsScreen';
+  static const String buyTreeScreen = '/buyTreeScreen';
   static const String myCardRestaurantDetailsScreen = '/myCardRestaurantDetailsScreen';
   static const String myUniversalCardScreen = '/myUniversalCardScreen';
   static const String seeAllRewordsScreen = '/seeAllRewordsScreen';

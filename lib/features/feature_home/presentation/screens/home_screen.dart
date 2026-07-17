@@ -7,8 +7,8 @@ import 'package:letjordangreen/core/hive/user.dart';
 import 'package:letjordangreen/core/router/routes_names.dart';
 import 'package:letjordangreen/core/states/base_states.dart';
 import 'package:letjordangreen/core/utils/constants/app_colors.dart';
-import 'package:letjordangreen/features/feature_home/data/models/projects_model.dart';
 import 'package:letjordangreen/features/feature_projects/cubits/projects_cubit.dart';
+import 'package:letjordangreen/features/feature_projects/data/models/projects_model.dart';
 import 'package:letjordangreen/features/feature_scan_qr/cubits/scan_qr_cubit/scan_qr_cubit.dart';
 import 'package:letjordangreen/features/feature_user_information/cubits/user_information_cubit/user_information_cubit.dart';
 
@@ -94,11 +94,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     Expanded(
                       child: _ActionBox(
                         icon: Icons.add_box_outlined,
-                        label: 'Plant a Tree',
+                        label: 'Buy a Tree',
                         color: HomeScreen.darkGreen,
-                        onTap: !userHiveModel.roles!.contains('farmer') ?
-                        ()=> _showNotFarmerDialog(context):
-                            ()=> context.push(AppRoutes.treeScannerScreen),
+                        onTap:
+                        // !(userHiveModel.roles?.contains('farmer') ?? false) ?
+                        //     () => _showNotFarmerDialog(context) :
+                            () => context.push(AppRoutes.allProjectsScreen),
                       ),
                     ),
                     SizedBox(width: 12),

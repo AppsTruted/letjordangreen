@@ -5,6 +5,7 @@ import 'package:letjordangreen/core/states/base_states.dart';
 import 'package:letjordangreen/core/utils/constants/app_colors.dart';
 import 'package:letjordangreen/features/feature_inspection_queue/cubits/inspection_queue_cubit.dart';
 import 'package:letjordangreen/features/feature_inspection_queue/data/models/inspection_queue_model.dart';
+import 'package:letjordangreen/widgets/custom_text_form_field.dart';
 
 class InspectionQueueScreen extends StatefulWidget {
   const InspectionQueueScreen({super.key});
@@ -111,65 +112,6 @@ class _InspectionQueueScreenState extends State<InspectionQueueScreen> with Sing
     );
   }
 
-  // Widget _buildSearchBar() {
-  //   return Container(
-  //     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-  //     color: Colors.white,
-  //     child: Row(
-  //       children: [
-  //         Expanded(
-  //           child: Container(
-  //             height: 45,
-  //             decoration: BoxDecoration(
-  //               color: Colors.grey.shade50,
-  //               borderRadius: BorderRadius.circular(12),
-  //               border: Border.all(color: Colors.grey.shade300),
-  //             ),
-  //             child: TextField(
-  //               controller: _searchController,
-  //               onChanged: (value) => setState(() {}),
-  //               decoration: InputDecoration(
-  //                 hintText: 'Search by name, code, or phone',
-  //                 hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),
-  //                 prefixIcon: Icon(Icons.search, color: Colors.grey.shade500),
-  //                 border: InputBorder.none,
-  //                 contentPadding: const EdgeInsets.symmetric(vertical: 10),
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //         const SizedBox(width: 12),
-  //         Container(
-  //           height: 45,
-  //           padding: const EdgeInsets.symmetric(horizontal: 12),
-  //           decoration: BoxDecoration(
-  //             color: Colors.grey.shade50,
-  //             borderRadius: BorderRadius.circular(12),
-  //             border: Border.all(color: Colors.grey.shade300),
-  //           ),
-  //           child: Row(
-  //             mainAxisSize: MainAxisSize.min,
-  //             children: [
-  //               Text(
-  //                 _getStatusCount('pending_human'),
-  //                 style: const TextStyle(
-  //                   fontWeight: FontWeight.bold,
-  //                   fontSize: 16,
-  //                 ),
-  //               ),
-  //               const SizedBox(width: 6),
-  //               const Icon(
-  //                 Icons.eighteen_mp_rounded,
-  //                 size: 16,
-  //                 color: Colors.orange,
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   Widget _buildFilterTabs() {
     return Container(
@@ -616,15 +558,6 @@ class _InspectionQueueScreenState extends State<InspectionQueueScreen> with Sing
     }
   }
 
-  String _getStatusCount(String status) {
-    final state = context.read<InspectionQueueCubit>().state;
-    if (state is SuccessState<InspectionQueueModel>) {
-      final orders = state.data.docs ?? [];
-      return orders.where((order) => order.verificationStatus == status).length.toString();
-    }
-    return '0';
-  }
-
   Color _getPriorityColor(Doc order) {
     // Add logic for priority based on criteria
     if (order.rejectionCount != null && order.rejectionCount! > 0) {
@@ -648,7 +581,10 @@ class _InspectionQueueScreenState extends State<InspectionQueueScreen> with Sing
       orderId,
       {'verificationStatus': status},
     );
+    context.read<InspectionQueueCubit>().updateStatus(
+      status, orderId
 
+    );
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Order ${status == 'approved' ? 'approved' : 'rejected'} successfully'),
@@ -709,20 +645,24 @@ class _InspectionQueueScreenState extends State<InspectionQueueScreen> with Sing
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Reject Order'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Please provide a reason for rejection:'),
-            const SizedBox(height: 12),
-            TextField(
-              controller: reasonController,
-              decoration: const InputDecoration(
+        insetPadding: EdgeInsets.all(12),
+         shape: OutlineInputBorder( borderRadius: BorderRadius.circular(8)),
+        content: Container(
+          width: MediaQuery.of(context).size.width,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Please provide a reason for rejection:'),
+              const SizedBox(height: 12),
+              CustomTextFormField(
+                textEditingController: reasonController,
                 hintText: 'Enter rejection reason',
-                border: OutlineInputBorder(),
+                border: OutlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+                maxLine: 3,
               ),
-              maxLines: 3,
-            ),
-          ],
+            ],
+          ),
         ),
         actions: [
           TextButton(
@@ -740,6 +680,10 @@ class _InspectionQueueScreenState extends State<InspectionQueueScreen> with Sing
                     'rejectionReason': reasonController.text,
                     'rejectionCount': rejectionCount,
                   },
+                );
+                context.read<InspectionQueueCubit>().updateStatus(
+                  "rejected",
+                  order.id!,
                 );
                 Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(

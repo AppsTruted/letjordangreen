@@ -5,8 +5,8 @@ import 'package:letjordangreen/core/hive/user.dart';
 import 'package:letjordangreen/core/router/routes_names.dart';
 import 'package:letjordangreen/core/states/base_states.dart';
 import 'package:letjordangreen/core/utils/constants/app_colors.dart';
-import 'package:letjordangreen/features/feature_home/data/models/projects_model.dart';
 import 'package:letjordangreen/features/feature_projects/cubits/projects_cubit.dart';
+import 'package:letjordangreen/features/feature_projects/data/models/projects_model.dart';
 import 'package:letjordangreen/features/feature_scan_qr/cubits/scan_qr_cubit/scan_qr_cubit.dart';
 import 'package:letjordangreen/features/feature_user_information/cubits/user_information_cubit/user_information_cubit.dart';
 
@@ -382,6 +382,37 @@ class _ProjectCard extends StatelessWidget {
                 ),
               ),
             ),
+
+            if(!( userHiveModel.roles?.contains('farmer')??false))
+            const SizedBox(height: 16),
+
+            if(!( userHiveModel.roles?.contains('farmer')??false))
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    context.read<ScanQrCubit>().setProjectId(project.id!);
+                    context.push(AppRoutes.buyTreeScreen, extra: project);
+                  },
+                  icon: const Icon(Icons.grass_rounded, size: 20),
+                  label: const Text(
+                    'Buy Tree',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.primaryColor,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 0,
+                  ),
+                ),
+              ),
           ],
         ),
       ),

@@ -86,18 +86,18 @@ class _DrawerViewState extends State<DrawerView> {
                     context.push(AppRoutes.editProfileScreen);
                   },
                 ),
-                // if(state.isLoggedIn && (userHiveModel.roles!.contains("admin") || userHiveModel.roles!.contains("superAdmin")))
-                // const SizedBox(height: 18),
-                //
-                // if(state.isLoggedIn && (userHiveModel.roles!.contains("inspector") || userHiveModel.roles!.contains("superAdmin")))
-                //   _ManagementTile(
-                //     icon: Icons.search,
-                //     title: "Inspection Queue",
-                //     subtitle: "Field Inspection Ledger",
-                //     onTap: () {
-                //       context.push(AppRoutes.inspectionQueueScreen);
-                //     },
-                //   ),
+                if(state.isLoggedIn && (userHiveModel.roles!.contains("inspector") || userHiveModel.roles!.contains("superAdmin")))
+                const SizedBox(height: 18),
+
+                if(state.isLoggedIn && (userHiveModel.roles!.contains("inspector") || userHiveModel.roles!.contains("superAdmin")))
+                  _ManagementTile(
+                    icon: Icons.search,
+                    title: "Inspection Queue",
+                    subtitle: "Field Inspection Ledger",
+                    onTap: () {
+                      context.push(AppRoutes.inspectionQueueScreen);
+                    },
+                  ),
                 if(state.isLoggedIn && (userHiveModel.roles!.contains("farmer")))
                 const SizedBox(height: 16),
                 if(state.isLoggedIn && (userHiveModel.roles!.contains("farmer")))

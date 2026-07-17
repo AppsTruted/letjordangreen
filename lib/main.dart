@@ -13,6 +13,7 @@ import 'package:letjordangreen/features/feature_profile/cubits/profile_cubits/pr
 import 'package:letjordangreen/features/feature_projects/cubits/projects_cubit.dart';
 import 'package:letjordangreen/features/feature_scan_qr/cubits/scan_qr_cubit/scan_qr_cubit.dart';
 import 'package:letjordangreen/features/feature_user_information/cubits/user_information_cubit/user_information_cubit.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'core/hive/user.dart';
 import 'core/router/routes.dart';

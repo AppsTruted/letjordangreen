@@ -8,6 +8,8 @@ import 'package:letjordangreen/features/feature_auth/feature_sign_up/cubit/signu
 import 'package:letjordangreen/features/feature_auth/feature_sign_up/presentation/processing/signup_provider.dart';
 import 'package:letjordangreen/features/feature_auth/feature_sign_up/presentation/screens/signup_screen.dart';
 import 'package:letjordangreen/features/feature_auth/feature_splash/presentation/splash_screen.dart';
+import 'package:letjordangreen/features/feature_buy_tree/cubits/buy_tree_cubit.dart';
+import 'package:letjordangreen/features/feature_buy_tree/presentation/screens/buy_tree_screen.dart';
 import 'package:letjordangreen/features/feature_drawer_initialize/presentation/pages/drawer_initialize.dart';
 import 'package:letjordangreen/features/feature_farmer_supply_orders/cubits/farmer_supply_orders_cubit.dart';
 import 'package:letjordangreen/features/feature_farmer_supply_orders/presentation/screens/farmer_supply_orders_screen.dart';
@@ -16,6 +18,7 @@ import 'package:letjordangreen/features/feature_map/cubit/tree_cubit.dart';
 import 'package:letjordangreen/features/feature_map/presentation/screens/map_screen.dart';
 import 'package:letjordangreen/features/feature_profile/cubits/edit_user_profile_cubit/edit_user_profile_cubit.dart';
 import 'package:letjordangreen/features/feature_profile/presentation/edit_profile_view.dart';
+import 'package:letjordangreen/features/feature_projects/data/models/projects_model.dart';
 import 'package:letjordangreen/features/feature_projects/presentation/screens/all_projects_screen.dart';
 import 'package:letjordangreen/features/feature_scan_qr/cubits/image_picker_cubit.dart';
 import 'package:letjordangreen/features/feature_scan_qr/presentation/screens/scan_qr_screen.dart';
@@ -142,32 +145,22 @@ final GoRouter router = GoRouter(
     //
     // ),
     //
-    // GoRoute(
-    //   path: AppRoutes.serveMeByScanProductIdScreen,
-    //   pageBuilder: (context, state) {
-    //    final scannedValue = state.extra as RedemptionSuccessDataWithProduct;
-    //     return CustomTransitionPage<void>(
-    //       key: state.pageKey,
-    //       child: BlocProvider(
-    //           create: (context) => GetProductCubit(),
-    //           child: ServeMeByScanProductIdScreen(redemptionSuccessDataWithProduct: scannedValue),
-    //         ),
-    //       transitionsBuilder: buildTransition,
-    //     );
-    //   },
-    //
-    // ),
-    //
-    // GoRoute(
-    //   path: AppRoutes.myUniversalCardScreen,
-    //   pageBuilder: (context, state) => CustomTransitionPage<void>(
-    //     key: state.pageKey,
-    //     child: MyUniversalCardScreen(),
-    //     transitionsBuilder: buildTransition,
-    //   ),
-    //
-    // ),
-    //
+    GoRoute(
+      path: AppRoutes.buyTreeScreen,
+      pageBuilder: (context, state) {
+        final project = state.extra as ProjectsModel;
+        return CustomTransitionPage<void>(
+          key: state.pageKey,
+          child: BlocProvider(
+            create: (context) => BuyTreeCubit(),
+            child: BuyTreeScreen(project: project),
+          ),
+          transitionsBuilder: buildTransition,
+        );
+      },
+
+    ),
+
     // // GoRoute(
     // //   path: AppRoutes.loyaltyCardsScreen,
     // //   pageBuilder: (context, state) => CustomTransitionPage<void>(

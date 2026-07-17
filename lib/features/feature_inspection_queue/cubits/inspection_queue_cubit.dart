@@ -39,6 +39,36 @@ class InspectionQueueCubit extends Cubit<BaseState<InspectionQueueModel>> {
     }
   }
 
+  Future<void> updateStatus(status, String id) async {
+
+
+    final updateStatus = {
+      "status": status,
+    };
+
+    log(" updateStatus  $updateStatus");
+
+
+    try {
+      final response = await http.put(Uri.parse("$baseUrl/trees/$id/verify"), body: updateStatus,headers: getHeader(HeaderType.withToken));
+
+      log(" response ${response.statusCode}  ${response.body}");
+
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        // Reset state after success
+        // emit(BuyTreeState.initial());
+      }
+      else if (response.statusCode == 400) {
+
+      }
+    } catch (e) {
+
+      rethrow;
+    } finally {
+
+    }
+  }
   void updateOrderLocally(String orderId, Map<String, dynamic> updatedFields) {
     final currentState = state;
 
@@ -83,61 +113,7 @@ class InspectionQueueCubit extends Cubit<BaseState<InspectionQueueModel>> {
     }
   }
 
-  // Future<void> updateOrderStatus(String orderId, String newStatus, String oldStatus) async {
-  //   userHiveModel = userInformationCubit.state.userHiveModel;
-  //   try {
-  //
-  //     final Map<String, dynamic> updateData = {
-  //       'rejectionReason' : oldStatus,
-  //       'status': newStatus,
-  //     };
-  //
-  //     final response = await http.put(
-  //       Uri.parse("$baseUrl/trees/$orderId/verify"),
-  //       headers: getHeader(HeaderType.withToken),
-  //       body: updateData,
-  //     );
-  //
-  //     log("Update Order Status ${response.body} ${response.statusCode}");
-  //
-  //     if (response.statusCode == 200) {
-  //       final Map<String, dynamic> responseData = jsonDecode(response.body);
-  //       final updatedOrder = OrdersModel.fromJson(responseData);
-  //
-  //       // Update local state
-  //       final index = branches.indexWhere((order) => order.id == orderId);
-  //       if (index != -1) {
-  //         final updatedBranches = List<OrdersModel>.from(branches);
-  //         updatedBranches[index] = updatedOrder;
-  //         branches = updatedBranches;
-  //         emit(SuccessState(updatedBranches));
-  //       } else {
-  //         emit(SuccessState([updatedOrder]));
-  //       }
-  //     } else {
-  //       final errorBody = jsonDecode(response.body);
-  //       log("Error: ${errorBody['message'] ?? 'Unknown error'}");
-  //       emit(ErrorState());
-  //       // You might want to emit a custom error state with the error message
-  //     }
-  //   } catch (e) {
-  //     log("Error updating order: $e");
-  //     emit(ErrorState());
-  //     rethrow;
-  //   }
-  // }
-  //
-  // // Helper method to update order status locally without server call (if needed)
-  // void updateOrderStatusLocally(String orderId, String newStatus) {
-  //   final index = branches.indexWhere((order) => order.id == orderId);
-  //   if (index != -1) {
-  //     final updatedOrder = branches[index].copyWith(verificationStatus: newStatus);
-  //     final updatedBranches = List<OrdersModel>.from(branches);
-  //     updatedBranches[index] = updatedOrder;
-  //     branches = updatedBranches;
-  //     emit(SuccessState(updatedBranches));
-  //   }
-  // }
+
 }
 
 
