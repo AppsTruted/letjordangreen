@@ -204,7 +204,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             mainAxisSize: MainAxisSize.min,
             children: [
                Text(
-                'Let Gordan Green'.toUpperCase(),
+                'Let Jordan Green'.toUpperCase(),
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 33,

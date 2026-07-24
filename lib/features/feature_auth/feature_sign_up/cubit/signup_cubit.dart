@@ -58,7 +58,7 @@ class SignupCubit extends Cubit<SignupState> {
         "email": state.email,
        // "lastname": state.name,
         "name": state.name,
-       "phoneNumber": "965656565655",
+       "phoneNumber": "+965656565655",
         "role": "user",
      //   "status" : "pending"
       });

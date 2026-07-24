@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:letjordangreen/core/router/routes_names.dart';
 import 'package:letjordangreen/features/feature_auth/feature_sign_up/cubit/signup_cubit.dart';
 import 'package:letjordangreen/features/feature_auth/feature_sign_up/data/models/registered_user.dart';
 import 'package:letjordangreen/features/feature_auth/feature_sign_up/presentation/processing/signup_provider.dart';
@@ -174,6 +175,7 @@ class _SignupCardWidgetState extends State<SignupCardWidget> {
                 BlocListener<SignupCubit, SignupState>(
                   listener: (context, state) {
                     if (state.status == SignUpStatus.success) {
+                      context.push(AppRoutes.loginWithEmail);
                       // verifyYourEmailFunction(context);
                     }
                   },
@@ -319,7 +321,7 @@ class _SignupCardWidgetState extends State<SignupCardWidget> {
         // ),
       //  const SizedBox(width: 13),
         const Text(
-          "Let Gordan Green",
+          "Let Jordan Green",
           style: TextStyle(
             color: darkGreen,
             fontSize: 28,

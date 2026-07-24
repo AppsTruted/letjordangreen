@@ -89,7 +89,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
                   const Text(
-                    'Let Gordan Green',
+                    'Let Jordan Green',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 30,

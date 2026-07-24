@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +5,7 @@ import 'package:letjordangreen/core/hive/user.dart';
 import 'package:letjordangreen/core/router/routes_names.dart';
 import 'package:letjordangreen/core/states/base_states.dart';
 import 'package:letjordangreen/core/utils/constants/app_colors.dart';
+import 'package:letjordangreen/features/feature_home/presentation/widgets/news_card.dart';
 import 'package:letjordangreen/features/feature_projects/cubits/projects_cubit.dart';
 import 'package:letjordangreen/features/feature_projects/data/models/projects_model.dart';
 import 'package:letjordangreen/features/feature_scan_qr/cubits/scan_qr_cubit/scan_qr_cubit.dart';
@@ -32,7 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
   late UserHiveModel userHiveModel;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     userHiveModel = userInformationCubit.state.userHiveModel;
   }
@@ -132,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 builder: (context, state) {
                   if (state is SuccessState<List<ProjectsModel>>) {
                     return SizedBox(
-                      height: 250,
+                      height: 310,
                       child: ListView.separated(
                         separatorBuilder: (context, index) => const SizedBox(width: 8),
                         scrollDirection: Axis.horizontal,
@@ -190,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   children: [
-                    _NewsCard(
+                    NewsCard(
                       image: 'assets/img/background-login.jpg',
                       category: 'MILESTONE',
                       title: "Jordan's Reforestation\nMilestone Reached",
@@ -198,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onTap: () => _showNewsDetails(context),
                     ),
                     SizedBox(height: 14),
-                    _NewsCard(
+                    NewsCard(
                       image: 'assets/img/background-login.jpg',
                       category: 'EXPERT TIP',
                       title: 'Sustainability Tip: Choosing\nNative Species',
@@ -355,26 +353,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
     );
   }
-  void _showNotFarmerDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Access Restricted'),
-          content: const Text(
-            'Only farmers can plant trees. '
-                'Please register as a farmer to access this feature.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+
 }
 
 
@@ -460,9 +439,10 @@ class _ContributionCard extends StatelessWidget {
                   children: const [
                     Expanded(
                       child: _StatBox(
-                        icon: Icons.park_outlined,
-                        number: '124',
-                        label: 'Trees Planted',
+                        // icon: Icons.park_outlined,
+                        customLabel: 'CO₂/year',
+                        number: '21.77',
+                        label: 'Per Tree',
                       ),
                     ),
                     SizedBox(width: 16),
@@ -709,10 +689,13 @@ class _ForestCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    UserInformationCubit userInformationCubit = UserInformationCubit();
+    late UserHiveModel userHiveModel = userInformationCubit.state.userHiveModel;
+
     return InkWell(
       onTap: (){
-        context.read<ScanQrCubit>().setProjectId(project.id!);
-        context.push(AppRoutes.treeScannerScreen);
+        // context.read<ScanQrCubit>().setProjectId(project.id!);
+        // context.push(AppRoutes.treeScannerScreen);
       },
       child: Container(
         width: 300,
@@ -798,45 +781,6 @@ class _ForestCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
 
-                  // // Tree Statistics Row
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //   children: [
-                  //     _buildStatItem(
-                  //       label: 'Assigned',
-                  //       value: assignedTrees.toString(),
-                  //       color: HomeScreen.mutedGreen,
-                  //     ),
-                  //     _buildStatItem(
-                  //       label: 'Planted',
-                  //       value: plantedTrees.toString(),
-                  //       color: const Color(0xff39754c),
-                  //     ),
-                  //     _buildStatItem(
-                  //       label: 'Capacity',
-                  //       value: maxCapacity.toString(),
-                  //       color: Colors.grey.shade600,
-                  //     ),
-                  //   ],
-                  // ),
-                  // const SizedBox(height: 12),
-                  //
-                  // // Financial Info Row
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //   children: [
-                  //     _buildPriceItem(
-                  //       label: 'Client Price',
-                  //       value: '\$${clientPrice.toStringAsFixed(0)}',
-                  //     ),
-                  //     _buildPriceItem(
-                  //       label: 'Farmer Payout',
-                  //       value: '\$${farmerPayout.toStringAsFixed(1)}',
-                  //     ),
-                  //   ],
-                  // ),
-                  // const SizedBox(height: 12),
-
                   // Progress Row
                   Row(
                     children: [
@@ -874,6 +818,68 @@ class _ForestCard extends StatelessWidget {
                       ),
                     ),
                   ),
+                  if( userHiveModel.roles?.contains('farmer')??false)
+                  const SizedBox(height: 10),
+
+                  // Plant Tree Button
+                  if( userHiveModel.roles?.contains('farmer')??false)
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          context.read<ScanQrCubit>().setProjectId(project.id!);
+                          context.push(AppRoutes.treeScannerScreen);
+                        },
+                        icon: const Icon(Icons.grass_rounded, size: 20),
+                        label: const Text(
+                          'Plant Tree',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryColor,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 0,
+                        ),
+                      ),
+                    ),
+
+                  if(!( userHiveModel.roles?.contains('farmer')??false))
+                    const SizedBox(height: 16),
+
+                  if(!( userHiveModel.roles?.contains('farmer')??false))
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          context.read<ScanQrCubit>().setProjectId(project.id!);
+                          context.push(AppRoutes.buyTreeScreen, extra: project);
+                        },
+                        icon: const Icon(Icons.grass_rounded, size: 20),
+                        label: const Text(
+                          'Buy Tree',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primaryColor,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          elevation: 0,
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -882,159 +888,5 @@ class _ForestCard extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildStatItem({
-    required String label,
-    required String value,
-    required Color color,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w800,
-            color: color,
-          ),
-        ),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 9,
-            fontWeight: FontWeight.w600,
-            color: Colors.black.withOpacity(0.5),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildPriceItem({
-    required String label,
-    required String value,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w700,
-            color: Color(0xff2d4a33),
-          ),
-        ),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 9,
-            fontWeight: FontWeight.w600,
-            color: Colors.black.withOpacity(0.5),
-          ),
-        ),
-      ],
-    );
-  }
-
 }
 
-class _NewsCard extends StatelessWidget {
-  final String image;
-  final String category;
-  final String title;
-  final String body;
-  final VoidCallback? onTap;  // Add this
-
-  const _NewsCard({
-    required this.image,
-    required this.category,
-    required this.title,
-    required this.body,
-    this.onTap,  // Add this
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(  // Wrap with GestureDetector
-      onTap: onTap,  // Add this
-      child: Container(
-        height: 121,
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(17),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.035),
-              blurRadius: 14,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(11),
-              child: Image.asset(
-                image,
-                width: 92,
-                height: 92,
-                errorBuilder: (context, error, stackTrace) => SizedBox(
-                  width: 92,
-                  height: 92,
-                ),
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 3),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      category,
-                      style: const TextStyle(
-                        color: HomeScreen.mutedGreen,
-                        fontSize: 10,
-                        fontWeight: FontWeight.w900,
-                        letterSpacing: 1.7,
-                      ),
-                    ),
-                    const SizedBox(height: 9),
-                    Text(
-                      title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: HomeScreen.textDark,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w900,
-                        height: 1.06,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      body,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        color: Colors.black.withOpacity(0.65),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        height: 1.05,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

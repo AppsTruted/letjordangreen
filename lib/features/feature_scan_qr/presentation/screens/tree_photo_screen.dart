@@ -326,7 +326,7 @@ class _TreePhotoScreenState extends State<TreePhotoScreen> {
       });
 
       // _showSnackBar('✅ Tree planted successfully!', Colors.green);
-      _showSuccessDialog("Order sent successfully");
+      _showSuccessDialog("The world needs more people like you. Your trees are on the move—and so is the change you're creating");
      // context.read<ProjectsCubit>().getProjects();
 
       // Navigate back after success
@@ -348,10 +348,13 @@ class _TreePhotoScreenState extends State<TreePhotoScreen> {
   }
 
   void _showSuccessDialog(String message) {
+    // Grab the navigator using the SCREEN's context, before the dialog exists.
+    final navigator = Navigator.of(context);
+
     showDialog(
       context: context,
-      barrierDismissible: false, // Prevent dismissing by tapping outside
-      builder: (BuildContext context) {
+      barrierDismissible: false,
+      builder: (BuildContext dialogContext) {   // renamed to avoid shadowing
         return Dialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
@@ -365,7 +368,6 @@ class _TreePhotoScreenState extends State<TreePhotoScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Success Icon
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -379,7 +381,6 @@ class _TreePhotoScreenState extends State<TreePhotoScreen> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                // Title
                 const Text(
                   '🎉 Success!',
                   style: TextStyle(
@@ -389,7 +390,6 @@ class _TreePhotoScreenState extends State<TreePhotoScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                // Message
                 Text(
                   message,
                   textAlign: TextAlign.center,
@@ -399,18 +399,18 @@ class _TreePhotoScreenState extends State<TreePhotoScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                // OK Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).pop(); // Close dialog
-                      // Navigate back after dialog closes
-                      Future.delayed(const Duration(milliseconds: 300), () {
+                      Navigator.of(dialogContext).pop(); // close ONLY the dialog
+
+
                         if (mounted) {
-                          Navigator.pop(context, true);
+                          navigator.pop(); // pop screen
+                          navigator.pop(); // pop again if you really need two
                         }
-                      });
+
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
@@ -460,7 +460,9 @@ class _TreePhotoScreenState extends State<TreePhotoScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Plant Tree - ${widget.qrCode}'),
+        titleSpacing: 0,
+        leadingWidth: 42,
+        title: Text('Plant Tree - ${widget.qrCode}', style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white),),
         backgroundColor: Colors.green[900],
         foregroundColor: Colors.white,
         actions: [

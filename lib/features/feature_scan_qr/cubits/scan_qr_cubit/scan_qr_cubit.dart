@@ -98,7 +98,7 @@ class ScanQrCubit extends Cubit<ScanQrState> {
         const Duration(seconds: 30),
       );
       final responseBody = await response.stream.bytesToString();
-      log("responseBody $responseBody");
+      log("responseBody ${response.statusCode} $responseBody");
 
       final Map<String, dynamic> responseData = json.decode(responseBody);
 

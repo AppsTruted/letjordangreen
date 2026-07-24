@@ -33,7 +33,20 @@ class _TreeScannerScreenState extends State<TreeScannerScreen> {
   static const Color mutedGreen = Color(0xff7d805f);
   static const Color textDark = Color(0xff26251d);
 
-  bool get _isReady => _qrValue != null;
+  // ✅ Add this validation method
+  bool _isValidQRCode(String? value) {
+    if (value == null || value.isEmpty) return false;
+
+    // Trim and convert to uppercase for comparison
+    final cleaned = value.trim().toUpperCase();
+
+    // Check if it matches: LJG- + 12 hexadecimal characters
+    // LJG- (4 chars) + 12 hex chars = 16 characters total
+    final regex = RegExp(r'^LJG-[0-9A-F]{12}$');
+    return regex.hasMatch(cleaned);
+  }
+
+  bool get _isReady => _qrValue != null && _isValidQRCode(_qrValue);
 
   @override
   void initState() {
@@ -51,8 +64,8 @@ class _TreeScannerScreenState extends State<TreeScannerScreen> {
 
   initLocation() async {
     final location = await getUserCurrentLocation();
-    context.read<ScanQrCubit>().setStartLat(location?.latitude.toString()??"");
-    context.read<ScanQrCubit>().setStartLng(location?.longitude.toString()??"");
+    context.read<ScanQrCubit>().setStartLat(location?.latitude.toString() ?? "");
+    context.read<ScanQrCubit>().setStartLng(location?.longitude.toString() ?? "");
   }
 
   @override
@@ -69,10 +82,24 @@ class _TreeScannerScreenState extends State<TreeScannerScreen> {
 
     if (value == null || value.isEmpty) return;
 
-    HapticFeedback.mediumImpact();
+    // ✅ Validate the QR code format
+    if (!_isValidQRCode(value)) {
+      // Show error feedback for invalid QR
+      HapticFeedback.heavyImpact();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('❌ Invalid QR Code. Must be in format: LJG-XXXXXXXXXXXX'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 3),
+        ),
+      );
+      return;
+    }
 
+    // ✅ Valid QR code - proceed
+    HapticFeedback.mediumImpact();
     setState(() {
-      _qrValue = value;
+      _qrValue = value.trim().toUpperCase(); // Store in uppercase
       _capturedImage = capture.image;
       _scanLocked = true;
     });
@@ -91,7 +118,10 @@ class _TreeScannerScreenState extends State<TreeScannerScreen> {
   void _submitScan() async {
     if (!_isReady) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please scan a QR code first.')),
+        const SnackBar(
+          content: Text('Please scan a valid QR code first.'),
+          backgroundColor: Colors.orange,
+        ),
       );
       return;
     }
@@ -101,13 +131,13 @@ class _TreeScannerScreenState extends State<TreeScannerScreen> {
 
     if (!mounted) return;
 
-    context.read<ScanQrCubit>().setUniqueCode(_qrValue??"");
+    context.read<ScanQrCubit>().setUniqueCode(_qrValue ?? "");
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => TreePhotoScreen(
           qrCode: _qrValue!,
-        //  qrImage: _capturedImage,
+          //  qrImage: _capturedImage,
         ),
       ),
     );
@@ -211,13 +241,13 @@ class _TreeScannerScreenState extends State<TreeScannerScreen> {
                     vertical: 13,
                   ),
                   decoration: BoxDecoration(
-                    color: mutedGreen.withOpacity(0.86),
+                    color: _isReady ? Colors.green.shade700.withOpacity(0.86) : mutedGreen.withOpacity(0.86),
                     borderRadius: BorderRadius.circular(26),
                   ),
                   child: Text(
                     _isReady
-                        ? 'QR code captured successfully'
-                        : 'Align QR code within the frame',
+                        ? '✅ Valid QR code captured successfully'
+                        : '📷 Align QR code within the frame',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 15,
@@ -227,6 +257,7 @@ class _TreeScannerScreenState extends State<TreeScannerScreen> {
                 ),
               ),
             ),
+
             if (_isReady)
               Positioned(
                 left: 16,
@@ -238,6 +269,7 @@ class _TreeScannerScreenState extends State<TreeScannerScreen> {
                   systemOnline: _systemOnline,
                 ),
               ),
+
             Positioned(
               left: 0,
               right: 0,
@@ -292,29 +324,31 @@ class _TreeScannerScreenState extends State<TreeScannerScreen> {
                             child: Container(
                               height: 44,
                               decoration: BoxDecoration(
-                                color: darkGreen,
+                                color: _isReady ? darkGreen : Colors.grey.shade400,
                                 borderRadius: BorderRadius.circular(28),
-                                boxShadow: [
+                                boxShadow: _isReady
+                                    ? [
                                   BoxShadow(
                                     color: Colors.black.withOpacity(0.22),
                                     blurRadius: 16,
                                     offset: const Offset(0, 9),
                                   ),
-                                ],
+                                ]
+                                    : null,
                               ),
-                              child: const Row(
+                              child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Icon(
                                     Icons.arrow_forward,
-                                    color: Colors.white,
+                                    color: _isReady ? Colors.white : Colors.grey.shade600,
                                     size: 22,
                                   ),
-                                  SizedBox(width: 9),
+                                  const SizedBox(width: 9),
                                   Text(
                                     'Next',
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: _isReady ? Colors.white : Colors.grey.shade600,
                                       fontSize: 15,
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -324,9 +358,6 @@ class _TreeScannerScreenState extends State<TreeScannerScreen> {
                             ),
                           ),
                         ),
-
-
-
                       ],
                     ),
                   ],
@@ -338,6 +369,7 @@ class _TreeScannerScreenState extends State<TreeScannerScreen> {
       ),
     );
   }
+
   String _formatDetectedId(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "#UNKNOWN";
